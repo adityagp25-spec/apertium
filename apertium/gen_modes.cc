@@ -160,6 +160,8 @@ void set_debug_suffixes(pipeline& prog)
         cmd.debug_suffix.push_back("-pgen");
       } else {
         cmd.debug_suffix.push_back("-autoseq");
+        cmd.debug_suffix.push_back("-autoseq_trace");
+
       }
     } else if (starts_with(c, "rtx-proc")) {
       cmd.debug_suffix.push_back("-transfer");
