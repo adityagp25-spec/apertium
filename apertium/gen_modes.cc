@@ -183,6 +183,15 @@ void set_trace_opt(pipeline& mode)
     return;
   }
   auto& cmd = mode.steps.back().command;
+ 
+// If trace mode, switch autoseq binary to trace version
+if (cmd.find("autoseq") != std::string::npos &&
+    cmd.find("trace") != std::string::npos) {
+
+    size_t pos = cmd.find("autoseq");
+    cmd.replace(pos, std::string("autoseq").length(), "autoseq-trace");
+}
+}
   if (starts_with(cmd, "cg-proc") || starts_with(cmd, "lrx-proc") ||
      starts_with(cmd, "apertium-transfer") ||
      starts_with(cmd, "apertium-interchunk") ||
