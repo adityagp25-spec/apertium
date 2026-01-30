@@ -176,26 +176,26 @@ void set_debug_suffixes(pipeline& prog)
     }
   }
 }
-
 void set_trace_opt(pipeline& mode)
 {
   if (mode.steps.empty()) {
     return;
   }
+
   auto& cmd = mode.steps.back().command;
-  if (mode.name.find("trace") != std::string::npos &&
-    cmd.find("autoseq") != std::string::npos) {
 
+  // If trace mode, ensure autoseq uses the trace-enabled binary
+  if (mode.name.find("trace") != std::string::npos) {
     size_t pos = cmd.find("autoseq");
-    cmd.replace(pos, std::string("autoseq").length(), "autoseq-trace");
-}
-
-}
+    if (pos != std::string::npos) {
+      cmd.replace(pos, std::string("autoseq").length(), "autoseq-trace");
+    }
+  }
 
   if (starts_with(cmd, "cg-proc") || starts_with(cmd, "lrx-proc") ||
-     starts_with(cmd, "apertium-transfer") ||
-     starts_with(cmd, "apertium-interchunk") ||
-     starts_with(cmd, "apertium-postchunk")) {
+      starts_with(cmd, "apertium-transfer") ||
+      starts_with(cmd, "apertium-interchunk") ||
+      starts_with(cmd, "apertium-postchunk")) {
     cmd += " -t";
   } else if (starts_with(cmd, "rtx-proc")) {
     cmd += " -r";
