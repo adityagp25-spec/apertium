@@ -13,10 +13,10 @@ UString storeAndWriteWblank(InputFile& input, UFILE* output)
   int mychar;
   UString content = "[["_u;
 
-  while(true)
+  while (true)
   {
     mychar = input.get();
-    if(input.eof())
+    if (input.eof())
     {
       std::cerr << "ERROR: Unexpected EOF" << std::endl;
       exit(EXIT_FAILURE);
@@ -25,22 +25,34 @@ UString storeAndWriteWblank(InputFile& input, UFILE* output)
     content += mychar;
     u_fputc(mychar, output);
 
-    if(mychar == '\\')
+    // Escape handling
+    if (mychar == '\\')
     {
       mychar = input.get();
       content += mychar;
       u_fputc(mychar, output);
+      continue;
     }
-    else if(mychar == ']')
+
+    // Preserve slash safely inside token
+    if (mychar == '/')
+    {
+      continue;
+    }
+
+    // Detect closing ]]
+    if (mychar == ']')
     {
       mychar = input.get();
-
-      if(mychar == ']')
+      if (mychar == ']')
       {
         content += mychar;
         u_fputc(mychar, output);
         break;
       }
+
+      content += mychar;
+      u_fputc(mychar, output);
     }
   }
 
